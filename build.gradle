@@ -1,4 +1,59 @@
 allprojects {
-    group = 'xyz.apollosoftware'
+    group = 'xyz.apollosoftware.bibliothiki'
     version = '1.0-SNAPSHOT'
+}
+
+def documentationSiteArgs = tasks.register("documentationSiteArgs") {
+    description = "Generate arguments file for documentation site"
+    group = "documentation setup"
+
+    inputs.property("subprojects", subprojects.collect { it.name })
+
+    def argsFileProvider = project.layout.buildDirectory.dir("tmp-docs").map { it.file("modules.args") }
+    outputs.file(argsFileProvider)
+
+    def moduleSourcePaths = subprojects.collect {"${it.group}.${it.name}=${it.name}/src/main/java" }
+
+    doLast {
+        def argsFile = argsFileProvider.get().asFile
+        argsFile.delete()
+
+        moduleSourcePaths.each {
+            argsFile << '--module-source-path\n'
+            argsFile << it << '\n'
+        }
+    }
+}
+
+tasks.register("documentationSite", Javadoc) {
+    dependsOn(documentationSiteArgs)
+    def options = options as StandardJavadocDocletOptions
+
+    description = "Generate Javadoc API documentation for each module"
+    group = "documentation"
+    title = "${project.name} API ${version}"
+
+    options.charSet("utf-8")
+
+    setDestinationDir(project.layout.projectDirectory.dir("docs").asFile)
+
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption("html5", true)
+    }
+    options.addBooleanOption("Xdoclint:all", true)
+    options.addBooleanOption("use", true)
+    options.addBooleanOption("keywords", true)
+
+    subprojects.each { subproject ->
+        dependsOn(subproject.getTasksByName("classes", true))
+
+        subproject.tasks.withType(Javadoc).each { javadocTask ->
+            source(javadocTask.source)
+            classpath = files(subproject.collect({ it.configurations.runtimeClasspath.files }))
+            exclude(javadocTask.excludes)
+            include(javadocTask.includes)
+        }
+    }
+
+    options.setOptionFiles(documentationSiteArgs.get().outputs.files.getFiles().toList())
 }

@@ -1,4 +1,4 @@
-package xyz.apollosoftware.bibliothiki.compression.tar;
+package xyz.apollosoftware.bibliothiki.compression.formats.tar;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -7,11 +7,13 @@ import xyz.apollosoftware.bibliothiki.compression.CompressionException;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
-import static xyz.apollosoftware.bibliothiki.compression.tar.TapeArchivePaxAttributes.ParsedAttribute.PAX_PATH;
+import static xyz.apollosoftware.bibliothiki.compression.formats.tar.TapeArchivePaxAttributes.ParsedAttribute.PAX_PATH;
 
 /**
  * The extended attributes data as originally defined by the {@code pax} archive
  * utility and codified in POSIX.1-2001.
+ *
+ * @param path The full path for the entry.
  */
 public record TapeArchivePaxAttributes(@Nullable String path) {
 

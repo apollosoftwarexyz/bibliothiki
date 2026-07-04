@@ -2,9 +2,9 @@ package xyz.apollosoftware.bibliothiki.compression;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import xyz.apollosoftware.bibliothiki.compression.tar.TapeArchiveInputStream;
+import xyz.apollosoftware.bibliothiki.compression.formats.tar.TapeArchiveInputStream;
 import xyz.apollosoftware.bibliothiki.compression.utils.PeekableInputStream;
-import xyz.apollosoftware.bibliothiki.compression.zip.ZipArchiveInputStream;
+import xyz.apollosoftware.bibliothiki.compression.formats.zip.ZipArchiveInputStream;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -13,9 +13,9 @@ import java.io.OutputStream;
 import java.util.Objects;
 import java.util.zip.GZIPInputStream;
 
-import static xyz.apollosoftware.bibliothiki.compression.tar.TapeArchiveInputStream.isGzipStream;
-import static xyz.apollosoftware.bibliothiki.compression.tar.TapeArchiveInputStream.isTarStream;
-import static xyz.apollosoftware.bibliothiki.compression.zip.ZipArchiveInputStream.isZipStream;
+import static xyz.apollosoftware.bibliothiki.compression.formats.tar.TapeArchiveInputStream.isGzipStream;
+import static xyz.apollosoftware.bibliothiki.compression.formats.tar.TapeArchiveInputStream.isTarStream;
+import static xyz.apollosoftware.bibliothiki.compression.formats.zip.ZipArchiveInputStream.isZipStream;
 
 /**
  * Process an archive one entry at a time.

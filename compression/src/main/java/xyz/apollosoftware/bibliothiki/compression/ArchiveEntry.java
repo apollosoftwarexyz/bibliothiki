@@ -15,6 +15,8 @@ import static xyz.apollosoftware.bibliothiki.compression.CompressionSecurityExce
  *
  * @param name The name of the entry, relative to the root of the archive.
  * @param type The type of entry (see {@link Type}).
+ * @param permissions The permissions for the entry (if available).
+ * @param size The uncompressed size of the entry (if available).
  */
 public record ArchiveEntry(@NonNull String name, @NonNull Type type, @Nullable PermissionSet permissions, @Nullable Long size) {
 

@@ -1,4 +1,4 @@
-package xyz.apollosoftware.bibliothiki.compression.tar;
+package xyz.apollosoftware.bibliothiki.compression.formats.tar;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 import static xyz.apollosoftware.bibliothiki.compression.utils.Streams.pipeNBytes;
 

@@ -4,6 +4,7 @@ import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 import xyz.apollosoftware.bibliothiki.compression.ArchiveEntry;
 import xyz.apollosoftware.bibliothiki.compression.ArchiveInputStream;
+import xyz.apollosoftware.bibliothiki.compression.formats.tar.TapeArchiveInputStream;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

@@ -1,16 +1,14 @@
-package xyz.apollosoftware.bibliothiki.compression.zip;
+package xyz.apollosoftware.bibliothiki.compression.formats.zip;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import xyz.apollosoftware.bibliothiki.compression.ArchiveEntry;
-import xyz.apollosoftware.bibliothiki.compression.ArchiveFormat;
 import xyz.apollosoftware.bibliothiki.compression.ArchiveInputStream;
 import xyz.apollosoftware.bibliothiki.compression.CompressionException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;

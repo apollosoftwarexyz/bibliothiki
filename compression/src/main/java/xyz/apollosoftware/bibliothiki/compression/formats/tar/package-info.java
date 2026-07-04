@@ -12,6 +12,6 @@
  * This package supports raw tar files and the compression library supports tar
  * files wrapped in certain compression streams.
  *
- * @see xyz.apollosoftware.bibliothiki.compression.tar.TapeArchiveInputStream
+ * @see xyz.apollosoftware.bibliothiki.compression.formats.tar.TapeArchiveInputStream
  */
-package xyz.apollosoftware.bibliothiki.compression.tar;
+package xyz.apollosoftware.bibliothiki.compression.formats.tar;

@@ -8,4 +8,4 @@
  * modifications are implemented in the wrappers to adhere to the interfaces
  * (this ensures behavioral consistency between file formats).
  */
-package xyz.apollosoftware.bibliothiki.compression.zip;
+package xyz.apollosoftware.bibliothiki.compression.formats.zip;

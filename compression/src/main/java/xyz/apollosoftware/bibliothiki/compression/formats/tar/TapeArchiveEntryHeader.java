@@ -1,4 +1,4 @@
-package xyz.apollosoftware.bibliothiki.compression.tar;
+package xyz.apollosoftware.bibliothiki.compression.formats.tar;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
