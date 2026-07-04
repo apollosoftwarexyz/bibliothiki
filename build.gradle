@@ -1,0 +1,4 @@
+allprojects {
+    group = 'xyz.apollosoftware'
+    version = '1.0-SNAPSHOT'
+}

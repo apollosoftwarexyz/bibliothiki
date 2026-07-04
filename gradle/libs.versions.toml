@@ -1,0 +1,6 @@
+[versions]
+jspecify = "1.0.0"
+recordbuilder = "53"
+
+[libraries]
+jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
