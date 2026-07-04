@@ -22,7 +22,13 @@ jobs:
           distribution: 'temurin'
 
       - name: Build with Gradle Wrapper
-        run: ./gradlew clean build javadoc
+        run: ./gradlew clean build documentationSite
+
+      - name: Create Javadoc artifact
+        id: deployment
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/
 
   deploy:
     needs: build
