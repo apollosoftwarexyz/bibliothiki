@@ -45,7 +45,12 @@ public record TapeArchivePaxAttributes(@Nullable String path) {
         final var rawAttributes = value.lines().map(line -> {
             final var parts = line.split(" ", 2);
 
-            final long expectedLength = Long.parseLong(parts[0]);
+            final long expectedLength;
+            try {
+                expectedLength = Long.parseLong(parts[0]);
+            } catch (NumberFormatException ex) {
+                throw new CompressionException("Failed to parse PAX attribute length: %s".formatted(parts[0]), ex);
+            }
 
             // This unfortunately re-decodes the individual line (the
             // alternative is to parse line-by-line when passing to this decode

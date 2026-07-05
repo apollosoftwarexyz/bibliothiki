@@ -49,8 +49,7 @@ public class TapeArchiveInputStream extends ArchiveInputStream {
 
         try {
             stream.mark(2);
-            final var magic = new byte[2];
-            stream.read(magic);
+            final var magic = stream.readNBytes(2);
             stream.reset();
 
             if (magic[0] == (byte) 0x1F &&
@@ -77,10 +76,12 @@ public class TapeArchiveInputStream extends ArchiveInputStream {
 
         try {
             stream.mark(TAR_ENTRY_ALIGNMENT);
-            final var header = stream.readNBytes(TAR_ENTRY_ALIGNMENT);
-            stream.reset();
 
             // TODO: check the header
+            // https://github.com/apollosoftwarexyz/bibliothiki/issues/1
+            stream.readNBytes(TAR_ENTRY_ALIGNMENT);
+
+            stream.reset();
 
             return true;
         } catch (IOException ignored) {
