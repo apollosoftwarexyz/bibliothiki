@@ -98,7 +98,7 @@ public abstract class ArchiveInputStream implements Closeable {
     }
 
     /**
-     * Automatically detects the archive format (and therefore the
+     * Attempts to automatically detect the archive format (and therefore the
      * {@link ArchiveInputStream} implementation) to use for the given stream.
      *
      * @param stream The stream to detect the input stream for.
