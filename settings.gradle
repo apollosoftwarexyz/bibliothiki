@@ -4,3 +4,4 @@ plugins {
 
 rootProject.name = 'bibliothiki'
 include(':compression')
+include(':versioning')

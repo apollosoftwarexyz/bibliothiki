@@ -15,8 +15,6 @@ module xyz.apollosoftware.bibliothiki.compression {
     requires static transitive org.jspecify;
 
     exports xyz.apollosoftware.bibliothiki.compression;
-    opens xyz.apollosoftware.bibliothiki.compression;
-    opens xyz.apollosoftware.bibliothiki.compression.formats.tar;
-    opens xyz.apollosoftware.bibliothiki.compression.formats.zip;
-    opens xyz.apollosoftware.bibliothiki.compression.utils;
+    exports xyz.apollosoftware.bibliothiki.compression.formats.tar;
+    exports xyz.apollosoftware.bibliothiki.compression.formats.zip;
 }
