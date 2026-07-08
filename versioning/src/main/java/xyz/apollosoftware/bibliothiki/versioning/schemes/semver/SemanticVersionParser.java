@@ -68,6 +68,7 @@ public class SemanticVersionParser implements VersionParser<SemanticVersion> {
      * @return The parsed {@link SemanticVersion}.
      */
     @NonNull
+    @Override
     public SemanticVersion parse(@NonNull String version) {
         Objects.requireNonNull(version, "The version string must not be null");
 
@@ -143,7 +144,12 @@ public class SemanticVersionParser implements VersionParser<SemanticVersion> {
                 throw new VersioningException("Invalid version string, %s component missing".formatted(CORE_PARTS.get(i)));
             }
 
-            state.core[i] = Integer.parseInt(value);
+            try {
+                state.core[i] = Integer.parseInt(value);
+            } catch (NumberFormatException ex) {
+                throw new VersioningException("Invalid version string, %s component is not a valid number: %s".formatted(CORE_PARTS.get(i), value));
+            }
+
             if (state.core[i] != 0 && value.startsWith("0")) {
                 throw new VersioningException("Invalid version string, %s component must not start with a leading zero: %s".formatted(CORE_PARTS.get(i), value));
             }
