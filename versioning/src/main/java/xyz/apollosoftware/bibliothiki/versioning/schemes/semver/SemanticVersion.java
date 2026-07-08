@@ -344,7 +344,11 @@ public record SemanticVersion(
     public int compareTo(@NonNull final SemanticVersion other) {
         Objects.requireNonNull(other, "The version to compare to must not be null");
 
-        // Compare core version components.
+        // Compare core version components (since versions are unsigned per
+        // SemVer, this is with compareUnsigned as it is assumed any values that
+        // would ever appear negative here - e.g., as a result of code changes
+        // also interpret those values as unsigned). Regardless this is now and
+        // should always be validated elsewhere.
         if (major() != other.major()) return Integer.compareUnsigned(major(), other.major());
         if (minor() != other.minor()) return Integer.compareUnsigned(minor(), other.minor());
         if (patch() != other.patch()) return Integer.compareUnsigned(patch(), other.patch());
@@ -437,7 +441,7 @@ public record SemanticVersion(
      * @see #withIncrementedPreRelease(String, int)
      */
     @NonNull
-    public SemanticVersion withIncrementedPreRelease(String name) {
+    public SemanticVersion withIncrementedPreRelease(@NonNull String name) {
         return withIncrementedPreRelease(name, 1);
     }
 
@@ -476,7 +480,9 @@ public record SemanticVersion(
      * @see #withIncrementedPreRelease(String)
      */
     @NonNull
-    public SemanticVersion withIncrementedPreRelease(String name, int initialValue) {
+    public SemanticVersion withIncrementedPreRelease(@NonNull String name, int initialValue) {
+        Objects.requireNonNull(name, "The pre-release version to increment must not be null.");
+
         if (initialValue < 0) {
             throw new VersioningException("Pre-release version (%d) must be greater than or equal to zero.".formatted(initialValue));
         }
@@ -492,6 +498,7 @@ public record SemanticVersion(
                 preRelease().get(i + 1).isNumeric()) {
                 // ...store the index of the element.
                 nameIndex = i;
+                break;
             }
         }
 
@@ -715,8 +722,8 @@ public record SemanticVersion(
          * Construct the build metadata identifier.
          *
          * <p>
-         * Build identifiers must not empty so this constructor enforces that by
-         * ensuring the given value is non-empty.
+         * Build identifiers must not be empty so this constructor enforces that
+         * by ensuring the given value is non-empty.
          *
          * <p>
          * This constructor also enforces the character set requirements for the

@@ -6,6 +6,7 @@ import xyz.apollosoftware.bibliothiki.compression.ArchiveEntry;
 import xyz.apollosoftware.bibliothiki.compression.ArchiveInputStream;
 import xyz.apollosoftware.bibliothiki.compression.CompressionException;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -102,7 +103,8 @@ public class TapeArchiveInputStream extends ArchiveInputStream {
     private TapeArchiveEntryHeader activeEntry = null;
 
     /**
-     * Whether there is an active entry that has had the header read.
+     * Whether there is an active entry for which the header has already been
+     * read.
      *
      * <p>
      * (Implying that the next data on the stream is the contents of that
@@ -137,17 +139,6 @@ public class TapeArchiveInputStream extends ArchiveInputStream {
         }
 
         try {
-
-            // If there is no data left in the file, we have prematurely found
-            // the end of the stream (this should instead be explicitly declared
-            // with two null entries).
-            try {
-                if (stream.available() == 0) {
-                    throw new CompressionException("Unexpected end of stream");
-                }
-            } catch (final IOException ex) {
-                throw new CompressionException("Failed to check for next entry", ex);
-            }
 
             // If the data for the current entry has not yet been read, skip it.
             if (entryDataWaiting && activeEntry != null && activeEntry.fileSize() > 0) {
@@ -262,7 +253,9 @@ public class TapeArchiveInputStream extends ArchiveInputStream {
     @Override
     public synchronized void close() {
         try {
+            // Using the input stream after close is undefined behavior.
             this.activeEntry = null;
+            this.entryDataWaiting = false;
             super.close();
         } finally {
             this.isClosed = true;

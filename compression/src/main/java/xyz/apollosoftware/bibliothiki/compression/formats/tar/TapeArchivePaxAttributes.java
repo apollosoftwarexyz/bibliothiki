@@ -61,6 +61,10 @@ public record TapeArchivePaxAttributes(@Nullable String path) {
             }
 
             final var entry = parts[1].split("=", 2);
+            if (entry.length != 2) {
+                throw new CompressionException("Invalid PaxAttribute (did not match the expected 'key=value' format - got missing or extra = occurrences)");
+            }
+
             return new ParsedAttribute(entry[0], entry[1]);
         }).collect(Collectors.toUnmodifiableMap(ParsedAttribute::keyword, ParsedAttribute::value));
 

@@ -92,7 +92,7 @@ public class SemanticVersionParser implements VersionParser<SemanticVersion> {
                 case '+' -> offset = parseBuildMetadata(state, version, offset + 1);
                 case '-' -> offset = parsePreReleases(state, version, offset + 1);
                 default ->
-                        throw new VersioningException("Unexpected character following version core. Got '%s', expecting '+' or '-'");
+                        throw new VersioningException("Unexpected character following version core. Got '%s', expecting '+' or '-'".formatted(nextSegment));
             }
         }
 
