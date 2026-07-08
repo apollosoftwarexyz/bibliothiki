@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  * <p>
  * This is an immutable representation of a SemVer string.
  *
- * @implNote
+ * <p><b>Implementation Note:</b></p>
  * This class has a natural ordering that is inconsistent with
  * equals. Semantic Versioning (SemVer) does not consider build metadata when
  * determining precedence, however it is included naturally for
@@ -253,6 +253,16 @@ public record SemanticVersion(
      * If {@link #preRelease} or {@link #buildMetadata} are null, they are
      * replaced with empty lists. They are also both frozen to ensure they are
      * immutable.
+     *
+     * @param major The major version component (for breaking API changes).
+     * @param minor The minor version component (for backwards-compatible
+     *              functionality).
+     * @param patch The patch version component (for backwards-compatible bug
+     *              fixes).
+     * @param preRelease The list of pre-release identifiers (see
+     *                   {@link PreReleaseIdentifier}).
+     * @param buildMetadata The list of build metadata identifiers (see
+     *                      {@link BuildIdentifier}).
      */
     public SemanticVersion {
         if (major < 0) throw new VersioningException("Major version must be zero or positive.");
@@ -300,12 +310,30 @@ public record SemanticVersion(
         return !buildMetadata.isEmpty();
     }
 
+    /**
+     * The list of pre-release identifiers (see {@link PreReleaseIdentifier}).
+     *
+     * <p>
+     * The constructor for {@link SemanticVersion} ensures this is non-null
+     * (non pre-release versions have an empty list, instead).
+     *
+     * @return The list of {@link PreReleaseIdentifier}s.
+     */
     @Override
     @NonNull
     public List<PreReleaseIdentifier> preRelease() {
         return preRelease;
     }
 
+    /**
+     * The list of build metadata identifiers (see {@link BuildIdentifier}).
+     *
+     * <p>
+     * The constructor for {@link SemanticVersion} ensures this is non-null
+     * (versions with no build metadata have an empty list, instead).
+     *
+     * @return The list of {@link BuildIdentifier}s.
+     */
     @Override
     @NonNull
     public List<BuildIdentifier> buildMetadata() {
@@ -693,6 +721,8 @@ public record SemanticVersion(
          * <p>
          * This constructor also enforces the character set requirements for the
          * build identifier.
+         *
+         * @param value The build metadata value.
          */
         public BuildIdentifier {
             if (value.isEmpty()) {
