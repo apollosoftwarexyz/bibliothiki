@@ -15,5 +15,5 @@ module xyz.apollosoftware.bibliothiki.versioning {
     requires static transitive org.jspecify;
 
     exports xyz.apollosoftware.bibliothiki.versioning;
-    opens xyz.apollosoftware.bibliothiki.versioning;
+    exports xyz.apollosoftware.bibliothiki.versioning.schemes.semver;
 }
