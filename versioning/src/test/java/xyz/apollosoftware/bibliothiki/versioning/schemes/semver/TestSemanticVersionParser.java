@@ -201,9 +201,16 @@ class TestSemanticVersionParser {
         "1.2.3.4.foo",
         "1.2.3+foo+foo",
         "1.2.3-£",
+        "1.2.3-",
+        "1.2.3+",
         "1.2.3-+",
         "1.2.3££",
         "1.2.3+££",
+        "1.2.3-alpha.",
+        "1.2.3@",
+        "1.2.3-alpha@",
+        "1.2.3 ",
+        "1.2.3-alpha ",
     })
     @DisplayName("should reject additional known-bad strings")
     void testAdditionalInvalidExamples(@NonNull String version) {

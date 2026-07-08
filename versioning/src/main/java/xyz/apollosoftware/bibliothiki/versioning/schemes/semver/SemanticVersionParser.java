@@ -80,12 +80,7 @@ public class SemanticVersionParser implements VersionParser<SemanticVersion> {
         int offset = 0;
 
         // Parse the version core.
-        try {
-            offset = parseVersionCore(state, version, offset, state.core.length);
-        } catch (NumberFormatException ex) {
-            // If any of the versions are invalid, reject the format.
-            throw new VersioningException("Version core part invalid", ex);
-        }
+        offset = parseVersionCore(state, version, offset, state.core.length);
 
         while (offset < version.length()) {
             final var nextSegment = version.charAt(offset);
@@ -183,6 +178,10 @@ public class SemanticVersionParser implements VersionParser<SemanticVersion> {
 
     private static int parseComponent(@NonNull String componentName, @Nullable Character nextSegmentDelimiter, @NonNull Consumer<String> onComponent, @NonNull String version, int offset) {
         StringBuilder builder = new StringBuilder();
+
+        if (offset == version.length()) {
+            throw new VersioningException("Empty %s component".formatted(componentName));
+        }
 
         while (offset < version.length()) {
             final char c = version.charAt(offset);
