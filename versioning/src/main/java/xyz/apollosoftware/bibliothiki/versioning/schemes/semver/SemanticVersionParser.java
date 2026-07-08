@@ -111,6 +111,9 @@ public class SemanticVersionParser implements VersionParser<SemanticVersion> {
      */
     private static int parseVersionCore(@NonNull ParserState state, @NonNull String version, int offset, int parts) {
         final int versionLength = version.length();
+        // String[] is used instead of StringBuilder as in testing it seemed to
+        // be substantially faster (2x) to do string appending (perhaps due to
+        // reduced allocations as a result of the small string sizes).
         final String[] coreParts = new String[parts];
 
         // Loop over the version string to extract the version parts.

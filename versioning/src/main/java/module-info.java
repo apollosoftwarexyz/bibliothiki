@@ -11,7 +11,6 @@
  * <a href="https://github.com/apollosoftwarexyz/bibliothiki/tree/main/versioning" target="_blank">versioning (bibliothiki) - GitHub</a>
  */
 module xyz.apollosoftware.bibliothiki.versioning {
-    requires java.compiler;
     requires static transitive org.jspecify;
 
     exports xyz.apollosoftware.bibliothiki.versioning;

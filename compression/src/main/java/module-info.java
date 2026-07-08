@@ -11,7 +11,6 @@
  * <a href="https://github.com/apollosoftwarexyz/bibliothiki/tree/main/compression" target="_blank">compression (bibliothiki) - GitHub</a>
  */
 module xyz.apollosoftware.bibliothiki.compression {
-    requires java.compiler;
     requires static transitive org.jspecify;
 
     exports xyz.apollosoftware.bibliothiki.compression;
