@@ -1,6 +1,25 @@
+import org.gradle.internal.logging.ConsoleRenderer
+
+plugins {
+    id 'base'
+    id 'test-report-aggregation'
+    id 'jacoco-report-aggregation'
+}
+
 allprojects {
     group = 'xyz.apollosoftware.bibliothiki'
     version = '1.0-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+dependencies {
+    subprojects.each {
+        testReportAggregation project(it.name)
+        jacocoAggregation project(it.name)
+    }
 }
 
 def documentationSiteArgs = tasks.register("documentationSiteArgs") {
@@ -25,17 +44,21 @@ def documentationSiteArgs = tasks.register("documentationSiteArgs") {
     }
 }
 
-tasks.register("documentationSite", Javadoc) {
+final docsDirectory = project.layout.buildDirectory.dir("docs")
+final testReportsDirectory = project.layout.buildDirectory.dir("reports/tests")
+final siteDirectory = project.layout.buildDirectory.dir("site")
+
+final javadocSite = tasks.register("javadocSite", Javadoc) {
     dependsOn(documentationSiteArgs)
     def options = options as StandardJavadocDocletOptions
 
-    description = "Generate Javadoc API documentation for each module"
     group = "documentation"
+    description = "Generate Javadoc API documentation for each module"
     title = "${project.name} API ${version}"
 
     options.charSet("utf-8")
 
-    setDestinationDir(project.layout.projectDirectory.dir("docs").asFile)
+    setDestinationDir(docsDirectory.get().asFile)
 
     if (JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption("html5", true)
@@ -43,17 +66,86 @@ tasks.register("documentationSite", Javadoc) {
     options.addBooleanOption("Xdoclint:all", true)
     options.addBooleanOption("use", true)
     options.addBooleanOption("keywords", true)
+    options.addBooleanOption("serialwarn", true)
+    options.addBooleanOption("-syntax-highlight", true)
+    options.addStringOption("header", "bibliothiki API ${version}")
+    options.addStringOption("overview", project.layout.projectDirectory.file('overview.html').asFile.path)
 
     subprojects.each { subproject ->
         dependsOn(subproject.getTasksByName("classes", true))
 
         subproject.tasks.withType(Javadoc).each { javadocTask ->
             source(javadocTask.source)
-            classpath = files(subproject.collect({ it.configurations.runtimeClasspath.files }))
             exclude(javadocTask.excludes)
             include(javadocTask.includes)
+            classpath = files(subproject.collect({ it.configurations.runtimeClasspath.files }))
         }
     }
 
     options.setOptionFiles(documentationSiteArgs.get().outputs.files.getFiles().toList())
+}
+
+reporting {
+    reports {
+        create("testReport", AggregateTestReport) {
+            testSuiteName = 'test'
+            reportTask.get().setDestinationDirectory(testReportsDirectory.get())
+        }
+
+        create("coverageReport", JacocoCoverageReport) {
+            testSuiteName = 'test'
+        }
+    }
+}
+
+tasks.named('check') {
+    dependsOn tasks.named('testReport')
+    dependsOn tasks.named('coverageReport')
+}
+
+interface FileSystem {
+    @Inject
+    FileSystemOperations getFs()
+}
+
+tasks.register('site') {
+    group = 'documentation'
+    description = 'Generate project documentation site.'
+
+    def fs = project.objects.newInstance(FileSystem).getFs()
+
+    dependsOn javadocSite, tasks.named('testReport'), tasks.named('coverageReport')
+    inputs.dir(docsDirectory)
+    inputs.dir(testReportsDirectory)
+
+    final docsInputDirectory = docsDirectory.get()
+    final outputDirectory = siteDirectory.get()
+
+    final testReportsInputDirectory = testReportsDirectory.get()
+    final testReportsOutputDirectory = siteDirectory.get().dir('test-reports').getAsFile()
+
+    final coverageReportsInputDirectory = tasks.named('coverageReport').get().outputs
+    final coverageReportsOutputDirectory = siteDirectory.get().dir('coverage-reports').getAsFile()
+
+    doLast {
+        fs.copy {
+            from docsInputDirectory
+            into outputDirectory
+        }
+
+        fs.copy {
+            from testReportsInputDirectory
+            into testReportsOutputDirectory
+        }
+
+        fs.copy {
+            from coverageReportsInputDirectory
+            into coverageReportsOutputDirectory
+        }
+    }
+
+    outputs.dir(siteDirectory)
+    doLast {
+        logger.lifecycle("The documentation site can be viewed at: ${new ConsoleRenderer().asClickableFileUrl(siteDirectory.get().file('index.html').asFile)}")
+    }
 }

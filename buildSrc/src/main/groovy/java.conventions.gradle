@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'jvm-test-suite'
+    id 'jacoco'
 }
 
 java {
@@ -27,10 +28,6 @@ tasks.withType(Javadoc).configureEach {
     }
 
     options.addBooleanOption("Xdoclint:all", true)
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
