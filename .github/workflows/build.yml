@@ -1,4 +1,4 @@
-name: Publish Javadoc
+name: Build and Test
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-docs:
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -16,34 +16,11 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Set up JDK 25
+      - name: Set up JDK 17
         uses: actions/setup-java@v5
         with:
-          java-version: '25'
+          java-version: '17'
           distribution: 'temurin'
 
-      - name: Generate documentation site
-        run: ./gradlew clean site
-
-      - name: Create Javadoc artifact
-        id: deployment
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: build/site/
-
-  deploy:
-    needs: build-docs
-
-    permissions:
-      pages: write
-      id-token: write
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy Javadoc to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
+      - name: Build and test
+        run: ./gradlew clean check
